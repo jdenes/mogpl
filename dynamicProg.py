@@ -11,12 +11,12 @@
 """ OUTPUT:   un booléen indiquant si la line est colorable avec la séquence    """
 
 def simpleFit (sequence, line):
-    
+
     sequence = [0] + sequence # pour traiter le cas de la sous-séquence vide
     k = len(sequence)
     m = len(line)
     T = [[None for l in range(k)] for j in range(m)]
-    
+
     for l in range(k):
         for j in range(m):
             # Si l = 0
@@ -28,12 +28,12 @@ def simpleFit (sequence, line):
             elif (j == sequence[l] - 1):
                 if (l == 1): T[j][l] = True
                 else: T[j][l] = False
-            # Cas j > sl - 1   
+            # Cas j > sl - 1
             elif (j > sequence[l] - 1):
                 if (l == 1): T[j][l] = True
                 elif (j < sequence[l]+1): T[j][l] = False # pour éviter une récursion avec j négatif
                 else: T[j][l] = T[j-sequence[l]-1][l-1]
-                
+
     return T[m-1][k-1]
 
 
@@ -42,19 +42,19 @@ def simpleFit (sequence, line):
 """ OUTPUT:   un booléen indiquant si la ligne est colorable avec la séquence                                    """
 
 def coloredFit (sequence, line):
-    
+
     sequence = [0] + sequence
     k = len(sequence)
     m = len(line)
     T = [[None for l in range(k)] for j in range(m)]
-    
+
     for l in range(k):
         for j in range(m):
-            
+
             # Si l = 0
             if (l == 0):
                 if (1 in line[0:j+1]): T[j][l] = False
-                else: T[j][l] = True               
+                else: T[j][l] = True
             # Si l > 0 :
             # Cas j < sl - 1
             elif (j < sequence[l] - 1): T[j][l] = False
@@ -62,7 +62,7 @@ def coloredFit (sequence, line):
             elif (j == sequence[l] - 1):
                 if ((l == 1) and (not 0 in line[0:j+1])): T[j][l] = True
                 else: T[j][l] = False
-            # Cas j > sl - 1  
+            # Cas j > sl - 1
             elif (j > sequence[l] - 1):
                 # Cas l = 1
                 if (l == 1):
@@ -97,17 +97,17 @@ def coloredFit (sequence, line):
 
 def colorationDP (constraints):
 
-    # Initialisation   
+    # Initialisation
     sequencesLines, sequencesRows = constraints
     n = len(sequencesLines) # nb de lines
     m = len(sequencesRows) # nb de colonnes
     A = [[-1 for i in range(m)] for j in range(n)]
     linesToSee = list(range(n))
     rowsToSee = list(range(m))
-    
+
     # Début de l'itération
     while (len(linesToSee) != 0 or len(rowsToSee) != 0):
-    
+
         # On étudie toutes les lignes à voir
         for i in linesToSee:
             for j in [j for j in range(m) if A[i][j] == -1]:
@@ -128,7 +128,7 @@ def colorationDP (constraints):
                     if (j not in rowsToSee): rowsToSee.append(j)
         linesToSee[:] = []
 
-        # On étudie toutes les colonnes à voir        
+        # On étudie toutes les colonnes à voir
         for j in rowsToSee:
             for i in [i for i in range(n) if A[i][j] == -1]:
                 # On regarde si chaque case est colorable en noir, puis en blanc
@@ -145,7 +145,7 @@ def colorationDP (constraints):
                     if (i not in linesToSee): linesToSee.append(i)
                 elif (whiteColorable):
                     A[i][j] = 0
-                    if (i not in linesToSee): linesToSee.append(i)  
+                    if (i not in linesToSee): linesToSee.append(i)
         rowsToSee[:] = []
-            
+
     return (A, True)
